@@ -18,9 +18,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - name: setup vue environment file
-        run: |
-          echo "VUE_APP_NOT_SECRET_CODE=some_value" >  $GITHUB_WORKSPACE/.env
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
