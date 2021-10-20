@@ -20,32 +20,41 @@ provider "github" {
   owner = var.github_owner
 }
 
-resource "azurerm_resource_group" "test" {
+resource "azurerm_resource_group" "swa_rg" {
   name     = "rg-${var.resource_name}"
   location = "west europe"
 }
 
-resource "azurerm_static_site" "test" {
+resource "azurerm_application_insights" "aml_ai" {
+  name                = "appi-${var.resource_name}"
+  location            = azurerm_resource_group.swa_rg.location
+  resource_group_name = azurerm_resource_group.swa_rg.name
+  application_type    = "web"
+}
+resource "azurerm_static_site" "swa" {
   name                = "${var.resource_name}"
-  location            = azurerm_resource_group.test.location
-  resource_group_name = azurerm_resource_group.test.name
+  location            = azurerm_resource_group.swa_rg.location
+  resource_group_name = azurerm_resource_group.swa_rg.name
   sku_tier = "Free" #possible values are "Free" or "Standard"
+  tags                = {
+        "owner" = "yy"
+  }
 }
 
-resource "github_repository" "staticwebapp" {
+resource "github_repository" "swa_github" {
   name         = "static-web-app"
   description  = "terraform codebase"
   auto_init = true
 }
 
 resource "github_actions_secret" "api_key" {
-  repository      = github_repository.staticwebapp.name
+  repository      = github_repository.swa_github.name
   secret_name     = local.api_token_var
-  plaintext_value = azurerm_static_site.test.api_key
+  plaintext_value = azurerm_static_site.swa.api_key
 }
 
 resource "github_repository_file" "workflow" {
-  repository = github_repository.staticwebapp.name
+  repository = github_repository.swa_github.name
   branch     = "main"
   file       = ".github/workflows/azure-static-web-app.yml"
   overwrite_on_create = true
@@ -60,8 +69,8 @@ resource "github_repository_file" "workflow" {
 }
 
 output "hostname" {
-  value = azurerm_static_site.test.default_host_name
+  value = azurerm_static_site.swa.default_host_name
 }
 output "staticsite_api_key" {
-    value = azurerm_static_site.test.api_key
+    value = azurerm_static_site.swa.api_key
 }
