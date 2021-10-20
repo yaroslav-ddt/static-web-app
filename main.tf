@@ -6,7 +6,7 @@ variable "resource_name" {
     default = "staticapp-yy"
 }
 variable "github_token" {
-    default = "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"
+    default = "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"
 }
 
 variable "github_owner" {
