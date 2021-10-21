@@ -8,7 +8,7 @@ variable "resource_name" {
 variable "github_token" {}
 
 variable "github_owner" {
-    default = "yaroslav-ddt"
+    #default = "yaroslav-ddt"
 }
 
 variable "repository_name" {
