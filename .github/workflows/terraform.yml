@@ -39,10 +39,10 @@ jobs:
             -backend-config="key=$TF_STATE_BLOB_FILE" \
             -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN"
         env:
-            TF_STATE_BLOB_ACCOUNT_NAME:   ${{ secrets.terraform-sa-account }}
-            TF_STATE_BLOB_CONTAINER_NAME: ${{ secrets.terraform-sa-container }}
+            TF_STATE_BLOB_ACCOUNT_NAME:   ${{ secrets.TERRAFORM-SA-ACCOUNT }}
+            TF_STATE_BLOB_CONTAINER_NAME: ${{ secrets.TERRAFORM-SA-CONTAINER }}
             TF_STATE_BLOB_FILE:           "swa-staticwebapp-yy"
-            TF_STATE_BLOB_SAS_TOKEN:      ${{ secrets.terraform-sa-sas }}
+            TF_STATE_BLOB_SAS_TOKEN:      ${{ secrets.TERRAFORM-SA-SAS }}
             
       - name: Terraform Plan
         run: terraform plan -out deployment.tfplan

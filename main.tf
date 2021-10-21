@@ -5,10 +5,20 @@ locals {
 variable "resource_name" {
     default = "staticapp-yy"
 }
-variable "github_token" {}
+#variable "github_token" {}
 
 variable "github_owner" {
     default = "yaroslav-ddt"
+}
+
+terraform {
+  required_providers {
+    azurerm = {
+      source = "hashicorp/azurerm"
+      version = ">= 2.26"
+    }
+  }
+  backend "azurerm" {}
 }
 
 provider "azurerm" {
@@ -16,8 +26,9 @@ provider "azurerm" {
 }
 
 provider "github" {
-  token = var.github_token
-  owner = var.github_owner
+  #token = var.github_token
+  #owner = var.github_owner
+  token = GITHUB_TOKEN
 }
 
 resource "azurerm_resource_group" "swa_rg" {
@@ -37,7 +48,7 @@ resource "azurerm_static_site" "swa" {
   resource_group_name = azurerm_resource_group.swa_rg.name
   sku_tier = "Free" #possible values are "Free" or "Standard"
   tags                = {
-        "owner" = "yy"
+    "owner" = "yy"
   }
 }
 
