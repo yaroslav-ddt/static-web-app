@@ -72,5 +72,5 @@ jobs:
         run: |
           az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
           echo "static web app name:"
-          echo ${{ steps.tf-apply.outputs.swa_name }}
-          az staticwebapp appsettings set --name ${{ steps.tf-apply.outputs.swa_name }} --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=${{ steps.tf-apply.outputs.ai_instrumentation_key }}"
+          echo $(terraform output swa_name)
+          az staticwebapp appsettings set --name $(terraform output swa_name) --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=$(terraform output ai_instrumentation_key)"
