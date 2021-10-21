@@ -24,7 +24,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+      - name: Azure CLI Login
+        run: az login --service-principal -u $(carmodel-clientid) -p $(carmodel-clientsecret) --tenant $(carmodel-tenantid)
       # Runs a single command using the runners shell
       - name: Terraform setup
         uses: hashicorp/setup-terraform@v1.2.1
@@ -39,10 +40,10 @@ jobs:
             -backend-config="key=$TF_STATE_BLOB_FILE" \
             -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN"
         env:
-            TF_STATE_BLOB_ACCOUNT_NAME:   ${{ secrets.TERRAFORM-SA-ACCOUNT }}
-            TF_STATE_BLOB_CONTAINER_NAME: ${{ secrets.TERRAFORM-SA-CONTAINER }}
+            TF_STATE_BLOB_ACCOUNT_NAME:   ${{ secrets.TERRAFORM_SA_ACCOUNT }}
+            TF_STATE_BLOB_CONTAINER_NAME: ${{ secrets.TERRAFORM_SA_CONTAINER }}
             TF_STATE_BLOB_FILE:           "swa-staticwebapp-yy"
-            TF_STATE_BLOB_SAS_TOKEN:      ${{ secrets.TERRAFORM-SA-SAS }}
+            TF_STATE_BLOB_SAS_TOKEN:      ${{ secrets.TERRAFORM_SA_SAS }}
             
       - name: Terraform Plan
         run: terraform plan -out deployment.tfplan
