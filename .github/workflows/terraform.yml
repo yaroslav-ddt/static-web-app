@@ -77,10 +77,8 @@ jobs:
         run: |
           rg_name=$(terraform output -json rg_name)
           swa_name=$(terraform output -json swa_name)
-          echo $rg_name
-          echo $swa_name
-          echo $(terraform output -raw rg_name)
-          echo $(terraform output -raw swa_name)
+          echo "$rg_name"
+          echo "$swa_name"
           az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
           az configure --defaults group=$rg_name
           az account set -s ${{ secrets.ARM_SUBSCRIPTION_ID }}
