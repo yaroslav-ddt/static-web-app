@@ -13,9 +13,9 @@ variable "repository_name" {
     default = "static-web-app"
 }
 
-variable "client_id" {}
-variable "client_secret" {}
-variable "tenant_id" {}
+# variable "client_id" {}
+# variable "client_secret" {}
+# variable "tenant_id" {}
 
 terraform {
   required_providers {
@@ -63,21 +63,24 @@ resource "azurerm_static_site" "swa" {
 #  auto_init = true
 #}
 
-resource "null_resource" "azure-cli" {
-  provisioner "local-exec" {
-    command = <<EOT
-      az login --service-principal -u ${var.client_id} -p ${var.client_secret} --tenant ${var.tenant_id}
-      az staticwebapp appsettings set --name ${azurerm_static_site.swa.name} --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=${azurerm_application_insights.swa_ai.instrumentation_key}"
-    EOT
-  }
-  depends_on = [azurerm_static_site.swa,azurerm_application_insights.swa_ai]
-}
+# resource "null_resource" "azure-cli" {
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       az login --service-principal -u ${var.client_id} -p ${var.client_secret} --tenant ${var.tenant_id}
+#       az staticwebapp appsettings set --name ${azurerm_static_site.swa.name} --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=${azurerm_application_insights.swa_ai.instrumentation_key}"
+#     EOT
+#   }
+#   depends_on = [azurerm_static_site.swa,azurerm_application_insights.swa_ai]
+# }
+
+#adding api key to the github secrets
 resource "github_actions_secret" "api_key" {
   repository      = var.repository_name #github_repository.swa_github.name
   secret_name     = local.api_token_var
   plaintext_value = azurerm_static_site.swa.api_key
 }
 
+#creating workflow file from template
 resource "github_repository_file" "workflow" {
   repository =  var.repository_name #github_repository.swa_github.name
   branch     = "main"
@@ -96,6 +99,12 @@ resource "github_repository_file" "workflow" {
 output "hostname" {
   value = azurerm_static_site.swa.default_host_name
 }
-output "staticsite_api_key" {
-    value = azurerm_static_site.swa.api_key
+#output "staticsite_api_key" {
+#  value = azurerm_static_site.swa.api_key
+#}
+output "swa_name" {
+  value = azurerm_static_site.swa.name
+}
+output "ai_instrumentation_key" {
+  value = azurerm_application_insights.swa_ai.instrumentation_key
 }
