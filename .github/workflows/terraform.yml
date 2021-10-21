@@ -24,8 +24,10 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - name: Azure CLI Login
-        run: az login --service-principal -u $(carmodel-clientid) -p $(carmodel-clientsecret) --tenant $(carmodel-tenantid)
+      
+      #- name: Azure CLI Login
+      #  run: az login --service-principal -u $(carmodel-clientid) -p $(carmodel-clientsecret) --tenant $(carmodel-tenantid)
+      
       # Runs a single command using the runners shell
       - name: Terraform setup
         uses: hashicorp/setup-terraform@v1.2.1
