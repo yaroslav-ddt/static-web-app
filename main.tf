@@ -28,7 +28,7 @@ provider "azurerm" {
 provider "github" {
   #token = var.github_token
   #owner = var.github_owner
-  token = GITHUB_TOKEN
+  #token = GITHUB_TOKEN
 }
 
 resource "azurerm_resource_group" "swa_rg" {

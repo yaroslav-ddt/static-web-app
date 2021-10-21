@@ -44,7 +44,7 @@ jobs:
         env:
             TF_STATE_BLOB_ACCOUNT_NAME:   ${{ secrets.TERRAFORM_SA_ACCOUNT }}
             TF_STATE_BLOB_CONTAINER_NAME: ${{ secrets.TERRAFORM_SA_CONTAINER }}
-            TF_STATE_BLOB_FILE:           "swa-staticwebapp-yy"
+            TF_STATE_BLOB_FILE:           "swa-staticwebapp-yy.tfstate"
             TF_STATE_BLOB_SAS_TOKEN:      ${{ secrets.TERRAFORM_SA_SAS }}
             
       - name: Terraform Plan
