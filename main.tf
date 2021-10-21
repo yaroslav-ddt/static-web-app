@@ -31,6 +31,9 @@ provider "azurerm" {
   features {}
 }
 
+#data source to access the configuration of the AzureRM provider
+data "azurerm_client_config" "current" {}
+
 provider "github" {
   token = var.github_token
   owner = var.github_owner
@@ -63,15 +66,18 @@ resource "azurerm_static_site" "swa" {
 #  auto_init = true
 #}
 
-# resource "null_resource" "azure-cli" {
-#   provisioner "local-exec" {
-#     command = <<EOT
-#       az login --service-principal -u ${var.client_id} -p ${var.client_secret} --tenant ${var.tenant_id}
-#       az staticwebapp appsettings set --name ${azurerm_static_site.swa.name} --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=${azurerm_application_insights.swa_ai.instrumentation_key}"
-#     EOT
-#   }
-#   depends_on = [azurerm_static_site.swa,azurerm_application_insights.swa_ai]
-# }
+resource "null_resource" "azure-cli" {
+  provisioner "local-exec" {
+    command = <<EOF
+      az login --service-principal -u ${var.client_id} -p ${var.client_secret} --tenant ${var.tenant_id}
+      az staticwebapp appsettings set --name ${azurerm_static_site.swa.name} \
+        --resource-group ${azurerm_resource_group.swa_rg.name} \
+        --subscription ${data.azurerm_client_config.current.subscription_id} \
+        --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=${azurerm_application_insights.swa_ai.instrumentation_key}
+    EOF
+  }
+  depends_on = [azurerm_static_site.swa,azurerm_application_insights.swa_ai]
+}
 
 #adding api key to the github secrets
 resource "github_actions_secret" "api_key" {
