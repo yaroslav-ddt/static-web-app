@@ -20,15 +20,23 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
+      #Secrets for connecting Terraform provider to azure
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      #Secrets for github
       TF_VAR_github_token: ${{ secrets.REPO_TOKEN }}
       TF_VAR_github_owner: ${{ github.actor }}
       TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
       TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
       TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+      #Secrets for connecting azure storage where the terraform state is saved
+      TF_STATE_BLOB_ACCOUNT_NAME:   ${{ secrets.TERRAFORM_SA_ACCOUNT }}
+      TF_STATE_BLOB_CONTAINER_NAME: ${{ secrets.TERRAFORM_SA_CONTAINER }}
+      TF_STATE_BLOB_FILE:           "swa-staticwebapp-yy.tfstate"
+      TF_STATE_BLOB_SAS_TOKEN:      ${{ secrets.TERRAFORM_SA_SAS }}
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -50,11 +58,6 @@ jobs:
             -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
             -backend-config="key=$TF_STATE_BLOB_FILE" \
             -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN"
-        env:
-            TF_STATE_BLOB_ACCOUNT_NAME:   ${{ secrets.TERRAFORM_SA_ACCOUNT }}
-            TF_STATE_BLOB_CONTAINER_NAME: ${{ secrets.TERRAFORM_SA_CONTAINER }}
-            TF_STATE_BLOB_FILE:           "swa-staticwebapp-yy.tfstate"
-            TF_STATE_BLOB_SAS_TOKEN:      ${{ secrets.TERRAFORM_SA_SAS }}
             
       - name: Terraform Plan
         id: tf-plan
@@ -68,9 +71,9 @@ jobs:
         id: tf-apply
         run: terraform apply -auto-approve deployment.tfplan
 
+      #Configuring static web app settings to connect application insights
       - name: App Settings
         id: app-settings
         run: |
           az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
-          #echo $(terraform output swa_name)
-          az staticwebapp appsettings set --name $(terraform output swa_name) --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=$(terraform output ai_instrumentation_key)"
+          az staticwebapp appsettings set --name $(terraform output swa_name) --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=$(terraform output ai_instrumentation_key)
