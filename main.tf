@@ -107,4 +107,5 @@ output "swa_name" {
 }
 output "ai_instrumentation_key" {
   value = azurerm_application_insights.swa_ai.instrumentation_key
+  sensitive = true
 }
