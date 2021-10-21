@@ -11,6 +11,10 @@ variable "github_owner" {
     default = "yaroslav-ddt"
 }
 
+variable "repository_name" {
+    default = "static-web-app"
+}
+
 terraform {
   required_providers {
     azurerm = {
@@ -59,13 +63,13 @@ resource "azurerm_static_site" "swa" {
 #}
 
 resource "github_actions_secret" "api_key" {
-  repository      = "static-web-app"#github_repository.swa_github.name
+  repository      = var.repository_name #github_repository.swa_github.name
   secret_name     = local.api_token_var
   plaintext_value = azurerm_static_site.swa.api_key
 }
 
 resource "github_repository_file" "workflow" {
-  repository = github_repository.swa_github.name
+  repository =  var.repository_name #github_repository.swa_github.name
   branch     = "main"
   file       = ".github/workflows/azure-static-web-app.yml"
   overwrite_on_create = true
