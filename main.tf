@@ -5,7 +5,7 @@ locals {
 variable "resource_name" {
     default = "staticapp-yy"
 }
-#variable "github_token" {}
+variable "github_token" {}
 
 variable "github_owner" {
     default = "yaroslav-ddt"
@@ -26,8 +26,8 @@ provider "azurerm" {
 }
 
 provider "github" {
-  #token = var.github_token
-  #owner = var.github_owner
+  token = var.github_token
+  owner = var.github_owner
   #token = GITHUB_TOKEN
 }
 
