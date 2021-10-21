@@ -52,14 +52,14 @@ resource "azurerm_static_site" "swa" {
   }
 }
 
-resource "github_repository" "swa_github" {
-  name         = "static-web-app"
-  description  = "terraform codebase"
-  auto_init = true
-}
+#resource "github_repository" "swa_github" {
+#  name         = "static-web-app"
+#  description  = "terraform codebase"
+#  auto_init = true
+#}
 
 resource "github_actions_secret" "api_key" {
-  repository      = github_repository.swa_github.name
+  repository      = "static-web-app"#github_repository.swa_github.name
   secret_name     = local.api_token_var
   plaintext_value = azurerm_static_site.swa.api_key
 }
