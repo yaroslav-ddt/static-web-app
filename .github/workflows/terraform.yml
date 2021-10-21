@@ -47,7 +47,7 @@ jobs:
         id: tf-setup
         uses: hashicorp/setup-terraform@v1.2.1
         with:
-          terraform_wrapper: false
+          #terraform_wrapper: false
 
       # Runs a set of commands using the runners shell
       - name: Terraform Init
@@ -75,10 +75,12 @@ jobs:
       - name: App Settings
         id: app-settings
         run: |
-          rg_name=$(terraform output rg_name)
-          swa_name=$(terraform output swa_name)
+          rg_name=$(terraform output -raw rg_name)
+          swa_name=$(terraform output -raw swa_name)
           echo $rg_name
           echo $swa_name
+          echo $(terraform output -raw rg_name)
+          echo $(terraform output -raw swa_name)
           az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
           az configure --defaults group=$rg_name
           az account set -s ${{ secrets.ARM_SUBSCRIPTION_ID }}
