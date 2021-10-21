@@ -1,0 +1,54 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Terraform Apply
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  #push:
+  #  branches: [ main ]
+  #pull_request:
+  #  branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Terraform setup
+        uses: hashicorp/setup-terraform@v1.2.1
+        #run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Terraform Init
+        run: |
+          terraform init \
+            -backend-config="storage_account_name=$TF_STATE_BLOB_ACCOUNT_NAME" \
+            -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
+            -backend-config="key=$TF_STATE_BLOB_FILE" \
+            -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN"
+        env:
+            TF_STATE_BLOB_ACCOUNT_NAME:   ${{ secrets.terraform-sa-account }}
+            TF_STATE_BLOB_CONTAINER_NAME: ${{ secrets.terraform-sa-container }}
+            TF_STATE_BLOB_FILE:           "swa-staticwebapp-yy"
+            TF_STATE_BLOB_SAS_TOKEN:      ${{ secrets.terraform-sa-sas }}
+            
+      - name: Terraform Plan
+        run: terraform plan -out deployment.tfplan
+        env:
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          
