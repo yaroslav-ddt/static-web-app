@@ -56,6 +56,9 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           TF_VAR_github_token: ${{ secrets.REPO_TOKEN }}
           TF_VAR_github_owner: ${{ github.actor }}
+          TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
+          TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+          TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
           #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Terraform validation
@@ -68,9 +71,9 @@ jobs:
           #ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           #ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           #ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          TF_VAR_github_token: ${{ secrets.REPO_TOKEN }}
-          TF_VAR_github_owner: ${{ github.actor }}
-          TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
-          TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
-          TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
+          #TF_VAR_github_token: ${{ secrets.REPO_TOKEN }}
+          #TF_VAR_github_owner: ${{ github.actor }}
+          #TF_VAR_client_id: ${{ secrets.ARM_CLIENT_ID }}
+          #TF_VAR_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}
+          #TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
           #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
