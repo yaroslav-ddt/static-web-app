@@ -80,6 +80,4 @@ jobs:
           az account set -s ${{ secrets.ARM_SUBSCRIPTION_ID }}
           echo $(terraform output rg_name)
           echo $(terraform output swa_name)
-          az staticwebapp appsettings set \
-            --name $(terraform output swa_name) \
-            --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=$(terraform output ai_instrumentation_key)
+          az staticwebapp appsettings set --name $(terraform output swa_name) --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=$(terraform output ai_instrumentation_key)
