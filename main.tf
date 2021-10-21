@@ -7,13 +7,15 @@ variable "resource_name" {
 }
 variable "github_token" {}
 
-variable "github_owner" {
-    #default = "yaroslav-ddt"
-}
+variable "github_owner" {}
 
 variable "repository_name" {
     default = "static-web-app"
 }
+
+variable "client_id" {}
+variable "client_secret" {}
+variable "tenant_id" {}
 
 terraform {
   required_providers {
@@ -32,7 +34,6 @@ provider "azurerm" {
 provider "github" {
   token = var.github_token
   owner = var.github_owner
-  #token = GITHUB_TOKEN
 }
 
 resource "azurerm_resource_group" "swa_rg" {
@@ -64,9 +65,12 @@ resource "azurerm_static_site" "swa" {
 
 resource "null_resource" "azure-cli" {
   provisioner "local-exec" {
-    command = "az staticwebapp appsettings set --name ${azurerm_static_site.swa.name} --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=${azurerm_application_insights.swa_ai.instrumentation_key}"
+    command = <<EOT
+      az login --service-principal -u ${var.client_id} -p ${var.client_secret} --tenant ${var.tenant_id}
+      az staticwebapp appsettings set --name ${azurerm_static_site.swa.name} --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=${azurerm_application_insights.swa_ai.instrumentation_key}"
+    EOT
   }
-  depends_on = ["azurerm_static_site.swa","azurerm_application_insights.swa_ai"]
+  depends_on = [azurerm_static_site.swa,azurerm_application_insights.swa_ai]
 }
 resource "github_actions_secret" "api_key" {
   repository      = var.repository_name #github_repository.swa_github.name
