@@ -13,9 +13,9 @@ variable "repository_name" {
     default = "static-web-app"
 }
 
-# variable "client_id" {}
-# variable "client_secret" {}
-# variable "tenant_id" {}
+#variable "client_id" {}
+#variable "client_secret" {}
+#variable "tenant_id" {}
 
 terraform {
   required_providers {
@@ -66,18 +66,18 @@ resource "azurerm_static_site" "swa" {
 #  auto_init = true
 #}
 
-resource "null_resource" "azure-cli" {
-  provisioner "local-exec" {
-    command = <<EOF
-      az login --service-principal -u ${var.client_id} -p ${var.client_secret} --tenant ${var.tenant_id}
-      az staticwebapp appsettings set --name ${azurerm_static_site.swa.name} \
-        --resource-group ${azurerm_resource_group.swa_rg.name} \
-        --subscription ${data.azurerm_client_config.current.subscription_id} \
-        --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=${azurerm_application_insights.swa_ai.instrumentation_key}
-    EOF
-  }
-  depends_on = [azurerm_static_site.swa,azurerm_application_insights.swa_ai]
-}
+#resource "null_resource" "azure-cli" {
+#  provisioner "local-exec" {
+#    command = <<EOF
+#      az login --service-principal -u ${var.client_id} -p ${var.client_secret} --tenant ${var.tenant_id}
+#      az staticwebapp appsettings set --name ${azurerm_static_site.swa.name} \
+#        --resource-group ${azurerm_resource_group.swa_rg.name} \
+#        --subscription ${data.azurerm_client_config.current.subscription_id} \
+#        --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=${azurerm_application_insights.swa_ai.instrumentation_key}
+#    EOF
+#  }
+#  depends_on = [azurerm_static_site.swa,azurerm_application_insights.swa_ai]
+#}
 
 #adding api key to the github secrets
 resource "github_actions_secret" "api_key" {
@@ -105,9 +105,9 @@ resource "github_repository_file" "workflow" {
 output "hostname" {
   value = azurerm_static_site.swa.default_host_name
 }
-#output "staticsite_api_key" {
-#  value = azurerm_static_site.swa.api_key
-#}
+output "rg_name" {
+  value = azurerm_resource_group.swa_rg.name
+}
 output "swa_name" {
   value = azurerm_static_site.swa.name
 }
