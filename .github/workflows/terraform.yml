@@ -46,8 +46,8 @@ jobs:
       - name: Terraform setup
         id: tf-setup
         uses: hashicorp/setup-terraform@v1.2.1
-        with:
-          #terraform_wrapper: false
+        #with:
+        #  terraform_wrapper: false
 
       # Runs a set of commands using the runners shell
       - name: Terraform Init
