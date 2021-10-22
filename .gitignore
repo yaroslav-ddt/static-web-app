@@ -4,3 +4,4 @@
 terraform.tfstate
 terraform.tfstate.backup
 .terraform.tfstate.lock.info
+.github/workflows/azure-static-web-app.yml

@@ -1,1 +1,23 @@
-ReadMe
+This is an example of deploying Azure Static Web Application using terraform and GitHub actions.
+This project contains web application source files in the folder src and function application code in the folder api.
+For another framework, f.e. React, the function application folder must be named build and 
+the file ./terraform/azure-static-web-app.tpl have to be adjusted accordenly.
+
+Prerequisites:
+ - Azure tenant and subscription
+ - Service principal with contribution rights on the subscription
+ - Storage account where the terraform state will be saved
+ - GitHub token
+
+The following secrets have to be added to the GitHub repository secrets:
+ARM_CLIENT_ID - service principal id
+ARM_CLIENT_SECRET - service principal secret
+ARM_SUBSCRIPTION_ID
+ARM_TENANT_ID
+REPO_TOKEN - github token
+TERRAFORM_SA_ACCOUNT - storage account name
+TERRAFORM_SA_CONTAINER - container name
+TERRAFORM_SA_SAS - SAS created for the container
+
+After successful deployment of the terraform workflow, the azure-static-web-app workflow starts automatically. 
+At this moment the configuration of app settings cannot be done with terraform and the command "az staticwebapp appsettings set" doesn't work correctly, and therefore the connection of application insights to static web app should be done manually.
