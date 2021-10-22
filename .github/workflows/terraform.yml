@@ -13,6 +13,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: ./terraform
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -72,15 +76,14 @@ jobs:
         run: terraform apply -auto-approve deployment.tfplan
 
       #Configuring static web app settings to connect application insights
-      - name: App Settings
-        id: app-settings
-        run: |
-          rg_name="$(terraform output rg_name | tr -d '"')"
-          swa_name="$(terraform output swa_name | tr -d '"')"
-          echo $rg_name
-          echo $swa_name
-          az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
-          az configure --defaults group=$rg_name
-          az account set -s ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          echo "Setting the app insights insturmentation key as app setting"
-          az staticwebapp appsettings set --name $swa_name --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=$(terraform output ai_instrumentation_key | tr -d '"')
+      #Setting application settings with azure cli doesn't work correctly
+      #- name: App Settings
+      #  id: app-settings
+      #  run: |
+      #    rg_name="$(terraform output rg_name | tr -d '"')"
+      #    swa_name="$(terraform output swa_name | tr -d '"')"
+      #    az login --service-principal -u ${{ secrets.ARM_CLIENT_ID }} -p ${{ secrets.ARM_CLIENT_SECRET }} --tenant ${{ secrets.ARM_TENANT_ID }}
+      #    az configure --defaults group=$rg_name
+      #    az account set -s ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      #    echo "Setting the app insights insturmentation key as app setting"
+      #    az staticwebapp appsettings set --name $swa_name --setting-names APPINSIGHTS_INSTRUMENTATIONKEY=$(terraform output ai_instrumentation_key | tr -d '"')
