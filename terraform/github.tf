@@ -21,7 +21,7 @@ resource "github_repository_file" "workflow" {
      {
        app_location    = "/"
        api_location    = ""
-       output_location = ".github/workflows"
+       output_location = "out" #".github/workflows"
        api_token_var   = local.api_token_var
      }
    )
