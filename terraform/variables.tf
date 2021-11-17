@@ -10,7 +10,7 @@ variable "github_token" {}
 variable "github_owner" {}
 
 variable "repository_name" {
-    default = "static-web-app"
+    default = "nextjs-test"
 }
 
 #variables used to manage azure cli command
