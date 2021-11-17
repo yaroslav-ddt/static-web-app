@@ -19,8 +19,8 @@ resource "github_repository_file" "workflow" {
   overwrite_on_create = true
   content    =  templatefile("./azure-static-web-app.tpl",
      {
-       app_location    = "src"
-       api_location    = "api"
+       app_location    = "/"
+       api_location    = ""
        output_location = ".github/workflows"
        api_token_var   = local.api_token_var
      }
